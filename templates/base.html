@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Food Delivery{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'leafy-green': '#4CAF50',
+                        'leafy-green-dark': '#388E3C',
+                        'leafy-green-light': '#81C784',
+                        'carrot-orange': '#FF9800',
+                        'carrot-orange-dark': '#F57C00',
+                        'carrot-orange-light': '#FFB74D',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .btn-primary {
+            @apply bg-leafy-green hover:bg-leafy-green-dark text-white font-semibold py-2 px-4 rounded transition duration-200;
+        }
+        .btn-secondary {
+            @apply bg-carrot-orange hover:bg-carrot-orange-dark text-white font-semibold py-2 px-4 rounded transition duration-200;
+        }
+        .card {
+            @apply bg-white rounded-lg shadow-md overflow-hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    {% if user.is_authenticated %}
+    <nav class="bg-white shadow-lg border-b-4 border-leafy-green">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'dashboard' %}" class="text-2xl font-bold text-leafy-green">
+                        FoodDelivery
+                    </a>
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        {% if user.role == 'customer' %}
+                        <a href="{% url 'customer_dashboard' %}" class="text-gray-700 hover:text-leafy-green px-3 py-2 rounded-md text-sm font-medium">
+                            Browse Restaurants
+                        </a>
+                        {% elif user.role == 'merchant' %}
+                        <a href="{% url 'merchant_dashboard' %}" class="text-gray-700 hover:text-leafy-green px-3 py-2 rounded-md text-sm font-medium">
+                            My Restaurants
+                        </a>
+                        {% elif user.role == 'driver' %}
+                        <a href="{% url 'driver_dashboard' %}" class="text-gray-700 hover:text-leafy-green px-3 py-2 rounded-md text-sm font-medium">
+                            My Deliveries
+                        </a>
+                        {% elif user.role == 'admin' %}
+                        <a href="{% url 'admin_dashboard' %}" class="text-gray-700 hover:text-leafy-green px-3 py-2 rounded-md text-sm font-medium">
+                            Admin Panel
+                        </a>
+                        <a href="/admin/" class="text-gray-700 hover:text-leafy-green px-3 py-2 rounded-md text-sm font-medium">
+                            Django Admin
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-700">
+                        Welcome, <span class="font-semibold text-leafy-green">{{ user.username }}</span>
+                        <span class="text-xs bg-carrot-orange text-white px-2 py-1 rounded-full ml-2">{{ user.role|capfirst }}</span>
+                    </span>
+                    <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm font-medium transition duration-200">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="min-h-screen">
+        {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% elif message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} border px-4 py-3 rounded relative mb-4" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <p class="text-sm">&copy; 2025 FoodDelivery. All rights reserved.</p>
+                <p class="text-xs text-gray-400 mt-2">Built with Django, Tailwind CSS, and Vanilla JavaScript</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

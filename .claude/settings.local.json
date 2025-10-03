@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip3:*)",
+      "Bash(django-admin startproject:*)",
+      "Bash(python3 manage.py startapp:*)",
+      "Bash(python3 manage.py makemigrations:*)",
+      "Bash(python3 manage.py migrate:*)",
+      "Bash(python3 manage.py seed_data:*)",
+      "Bash(curl:*)",
+      "Bash(awk:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

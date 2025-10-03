@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ restaurant.name }} - Food Delivery{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Restaurant Header -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        {% if restaurant.image %}
+        <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="w-full h-64 object-cover">
+        {% else %}
+        <div class="w-full h-64 bg-gradient-to-br from-leafy-green to-carrot-orange flex items-center justify-center">
+            <span class="text-white text-8xl font-bold">{{ restaurant.name|slice:":1" }}</span>
+        </div>
+        {% endif %}
+        <div class="p-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ restaurant.name }}</h1>
+            <p class="text-gray-600 mb-4">{{ restaurant.description }}</p>
+            <div class="flex items-center space-x-6 text-sm text-gray-500">
+                <span>⭐ Rating: {{ restaurant.rating }}/5.00</span>
+                <span>📍 {{ restaurant.address }}</span>
+                <span>📞 {{ restaurant.phone_number }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Items -->
+    <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-leafy-green pb-2">Menu</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in menu_items %}
+            <div class="card" data-menu-item="{{ item.id }}">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-48 object-cover">
+                {% else %}
+                <div class="w-full h-48 bg-gradient-to-br from-carrot-orange-light to-leafy-green-light flex items-center justify-center">
+                    <span class="text-white text-6xl">🍔</span>
+                </div>
+                {% endif %}
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-gray-900">{{ item.name }}</h3>
+                        <span class="text-lg font-bold text-leafy-green">${{ item.price }}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">{{ item.description }}</p>
+                    {% if item.category %}
+                    <span class="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded mb-3">{{ item.category }}</span>
+                    {% endif %}
+                    <button onclick="addToCart({{ item.id }}, '{{ item.name }}', {{ item.price }})"
+                            class="w-full bg-carrot-orange hover:bg-carrot-orange-dark text-white font-semibold py-2 px-4 rounded transition duration-200">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-12">
+                <p class="text-gray-500 text-lg">No menu items available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Cart (Fixed Bottom) -->
+    <div id="cart" class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t-4 border-leafy-green p-4 hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Your Cart</h3>
+                    <p class="text-sm text-gray-600" id="cartSummary">0 items</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-xl font-bold text-leafy-green" id="cartTotal">$0.00</span>
+                    <button onclick="viewCart()"
+                            class="bg-leafy-green hover:bg-leafy-green-dark text-white font-semibold py-2 px-6 rounded transition duration-200">
+                        Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Modal -->
+<div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Your Order</h2>
+        <div id="cartItems" class="space-y-4 mb-6"></div>
+        <div class="border-t pt-4">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xl font-bold">Total:</span>
+                <span class="text-2xl font-bold text-leafy-green" id="modalTotal">$0.00</span>
+            </div>
+            <div class="mb-4">
+                <label for="deliveryAddress" class="block text-sm font-medium text-gray-700 mb-2">Delivery Address</label>
+                <textarea id="deliveryAddress" rows="3" required
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-leafy-green focus:border-leafy-green">{{ user.address }}</textarea>
+            </div>
+            <div class="mb-4">
+                <label for="orderNotes" class="block text-sm font-medium text-gray-700 mb-2">Order Notes (Optional)</label>
+                <textarea id="orderNotes" rows="2"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-leafy-green focus:border-leafy-green"></textarea>
+            </div>
+            <div class="flex space-x-4">
+                <button onclick="placeOrder()"
+                        class="flex-1 bg-leafy-green hover:bg-leafy-green-dark text-white font-semibold py-3 px-6 rounded transition duration-200">
+                    Place Order
+                </button>
+                <button onclick="closeCartModal()"
+                        class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 px-6 rounded transition duration-200">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const restaurantId = {{ restaurant.id }};
+    let cart = [];
+
+    function addToCart(itemId, itemName, itemPrice) {
+        const existingItem = cart.find(item => item.id === itemId);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({ id: itemId, name: itemName, price: itemPrice, quantity: 1 });
+        }
+        updateCart();
+    }
+
+    function removeFromCart(itemId) {
+        cart = cart.filter(item => item.id !== itemId);
+        updateCart();
+        updateCartModal();
+    }
+
+    function updateQuantity(itemId, newQuantity) {
+        const item = cart.find(item => item.id === itemId);
+        if (item) {
+            item.quantity = Math.max(1, newQuantity);
+            updateCart();
+            updateCartModal();
+        }
+    }
+
+    function updateCart() {
+        const cartElement = document.getElementById('cart');
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        document.getElementById('cartSummary').textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+        document.getElementById('cartTotal').textContent = `$${totalPrice.toFixed(2)}`;
+
+        if (cart.length > 0) {
+            cartElement.classList.remove('hidden');
+        } else {
+            cartElement.classList.add('hidden');
+        }
+    }
+
+    function viewCart() {
+        updateCartModal();
+        document.getElementById('cartModal').classList.remove('hidden');
+    }
+
+    function closeCartModal() {
+        document.getElementById('cartModal').classList.add('hidden');
+    }
+
+    function updateCartModal() {
+        const cartItemsDiv = document.getElementById('cartItems');
+        const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        cartItemsDiv.innerHTML = cart.map(item => `
+            <div class="flex items-center justify-between border-b pb-4">
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-900">${item.name}</h3>
+                    <p class="text-sm text-gray-600">$${item.price.toFixed(2)} each</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})"
+                            class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded">-</button>
+                    <span class="font-semibold">${item.quantity}</span>
+                    <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})"
+                            class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded">+</button>
+                    <span class="font-bold text-leafy-green w-20 text-right">$${(item.price * item.quantity).toFixed(2)}</span>
+                    <button onclick="removeFromCart(${item.id})"
+                            class="text-red-500 hover:text-red-700">✕</button>
+                </div>
+            </div>
+        `).join('');
+
+        document.getElementById('modalTotal').textContent = `$${totalPrice.toFixed(2)}`;
+    }
+
+    async function placeOrder() {
+        const deliveryAddress = document.getElementById('deliveryAddress').value;
+        const notes = document.getElementById('orderNotes').value;
+
+        if (!deliveryAddress.trim()) {
+            alert('Please enter a delivery address');
+            return;
+        }
+
+        if (cart.length === 0) {
+            alert('Your cart is empty');
+            return;
+        }
+
+        const orderData = {
+            restaurant_id: restaurantId,
+            delivery_address: deliveryAddress,
+            notes: notes,
+            items: cart.map(item => ({
+                menu_item_id: item.id.toString(),
+                quantity: item.quantity.toString()
+            }))
+        };
+
+        try {
+            const response = await fetch('/orders/api/create/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            if (response.ok) {
+                alert('Order placed successfully!');
+                cart = [];
+                updateCart();
+                closeCartModal();
+                window.location.href = '{% url "customer_dashboard" %}';
+            } else {
+                const error = await response.json();
+                alert('Error placing order: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            alert('Error placing order: ' + error.message);
+        }
+    }
+</script>
+{% endblock %}
