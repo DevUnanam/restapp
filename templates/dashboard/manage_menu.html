@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Menu - {{ restaurant.name }} - Food Delivery{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">{{ restaurant.name }} - Menu Management</h1>
+            <p class="mt-2 text-gray-600">Manage your menu items and specials</p>
+        </div>
+        <div class="flex space-x-4">
+            <a href="{% url 'edit_restaurant' restaurant.id %}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+                Edit Restaurant
+            </a>
+            <a href="{% url 'add_menu_item' restaurant.id %}" class="btn-primary">
+                + Add Menu Item
+            </a>
+        </div>
+    </div>
+
+    <!-- Menu Items Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for item in menu_items %}
+        <div class="card relative">
+            {% if item.is_chefs_special %}
+            <div class="absolute top-2 right-2 bg-carrot-orange text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
+                Chef's Special
+            </div>
+            {% endif %}
+
+            {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-48 object-cover">
+            {% else %}
+            <div class="w-full h-48 bg-gradient-to-br from-leafy-green to-carrot-orange flex items-center justify-center">
+                <span class="text-white text-6xl font-bold">{{ item.name|slice:":1" }}</span>
+            </div>
+            {% endif %}
+
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-xl font-bold text-gray-900">{{ item.name }}</h3>
+                    <span class="text-lg font-bold text-leafy-green">${{ item.price }}</span>
+                </div>
+
+                {% if item.category %}
+                <span class="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full mb-2">
+                    {{ item.category }}
+                </span>
+                {% endif %}
+
+                <p class="text-gray-600 text-sm mb-4">{{ item.description|truncatewords:15 }}</p>
+
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm {% if item.is_available %}text-green-600{% else %}text-red-600{% endif %}">
+                        {% if item.is_available %}● Available{% else %}● Unavailable{% endif %}
+                    </span>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex space-x-2">
+                    <a href="{% url 'edit_menu_item' item.id %}" class="flex-1 text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition duration-200">
+                        Edit
+                    </a>
+                    <a href="{% url 'delete_menu_item' item.id %}" class="flex-1 text-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition duration-200">
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-3 text-center py-12">
+            <p class="text-gray-500 text-lg mb-4">No menu items yet.</p>
+            <a href="{% url 'add_menu_item' restaurant.id %}" class="btn-primary inline-block">
+                Add Your First Menu Item
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-8">
+        <a href="{% url 'merchant_dashboard' %}" class="text-leafy-green hover:text-leafy-green-dark">
+            ← Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -8,7 +8,9 @@
       "Bash(python3 manage.py migrate:*)",
       "Bash(python3 manage.py seed_data:*)",
       "Bash(curl:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(cd:*)",
+      "Read(//mnt/c/Users/**)"
     ],
     "deny": [],
     "ask": []

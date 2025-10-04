@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
+from .models import User, CustomerProfile
 
 
 @admin.register(User)
@@ -14,3 +14,10 @@ class UserAdmin(BaseUserAdmin):
         ('Role Information', {'fields': ('role', 'is_verified')}),
         ('Additional Information', {'fields': ('phone_number', 'address')}),
     )
+
+
+@admin.register(CustomerProfile)
+class CustomerProfileAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'delivery_address', 'created_at')
+    search_fields = ('customer__username', 'delivery_address')
+    ordering = ('-created_at',)

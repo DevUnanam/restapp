@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if menu_item %}Edit{% else %}Add{% endif %} Menu Item - {{ restaurant.name }} - Food Delivery{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">{% if menu_item %}Edit{% else %}Add{% endif %} Menu Item</h1>
+        <p class="mt-2 text-gray-600">{{ restaurant.name }}</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="space-y-6">
+                <!-- Name -->
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Item Name *
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Description *
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Price and Category Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Price -->
+                    <div>
+                        <label for="{{ form.price.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Price ($) *
+                        </label>
+                        {{ form.price }}
+                        {% if form.price.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.price.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Category
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.category.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Image -->
+                <div>
+                    <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Item Image
+                    </label>
+                    {{ form.image }}
+                    {% if menu_item and menu_item.image %}
+                        <div class="mt-2">
+                            <img src="{{ menu_item.image.url }}" alt="{{ menu_item.name }}" class="h-32 w-32 object-cover rounded-lg">
+                        </div>
+                    {% endif %}
+                    {% if form.image.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.image.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Checkboxes -->
+                <div class="space-y-4">
+                    <!-- Is Available -->
+                    <div class="flex items-center">
+                        {{ form.is_available }}
+                        <label for="{{ form.is_available.id_for_label }}" class="ml-2 block text-sm text-gray-700">
+                            Item is available for ordering
+                        </label>
+                    </div>
+
+                    <!-- Is Chef's Special -->
+                    <div class="flex items-center">
+                        {{ form.is_chefs_special }}
+                        <label for="{{ form.is_chefs_special.id_for_label }}" class="ml-2 block text-sm text-gray-700">
+                            Mark as Chef's Special (only one item should be marked as special at a time)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="mt-8 flex justify-end space-x-4">
+                <a href="{% url 'manage_menu' restaurant.id %}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+                    Cancel
+                </a>
+                <button type="submit" class="btn-primary">
+                    {% if menu_item %}Update{% else %}Add{% endif %} Menu Item
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
