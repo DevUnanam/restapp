@@ -10,7 +10,8 @@
       "Bash(curl:*)",
       "Bash(awk:*)",
       "Bash(cd:*)",
-      "Read(//mnt/c/Users/**)"
+      "Read(//mnt/c/Users/**)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []
