@@ -13,7 +13,7 @@
     <div class="mb-12">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-leafy-green pb-2">My Restaurants</h2>
-            <a href="{% url 'create_restaurant' %}" class="btn-primary">
+            <a href="{% url 'create_restaurant' %}" class="btn-primary border border-gray-300 px-4 py-2 hover:bg-leafy-green rounded-lg">
                 + Add Restaurant
             </a>
         </div>
@@ -43,7 +43,7 @@
                         <a href="{% url 'manage_menu' restaurant.id %}" class="flex-1 text-center px-4 py-2 bg-leafy-green hover:bg-leafy-green-dark text-white rounded-lg text-sm font-medium transition duration-200">
                             Manage Menu
                         </a>
-                        <a href="{% url 'edit_restaurant' restaurant.id %}" class="flex-1 text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition duration-200">
+                        <a href="{% url 'edit_restaurant' restaurant.id %}" class="flex-1 text-center px-4 py-2 bg-leafy-green hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition duration-200">
                             Edit
                         </a>
                     </div>

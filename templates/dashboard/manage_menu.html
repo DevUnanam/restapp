@@ -14,7 +14,7 @@
             <a href="{% url 'edit_restaurant' restaurant.id %}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
                 Edit Restaurant
             </a>
-            <a href="{% url 'add_menu_item' restaurant.id %}" class="btn-primary">
+            <a href="{% url 'add_menu_item' restaurant.id %}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200 btn-primary">
                 + Add Menu Item
             </a>
         </div>
@@ -60,10 +60,10 @@
 
                 <!-- Actions -->
                 <div class="flex space-x-2">
-                    <a href="{% url 'edit_menu_item' item.id %}" class="flex-1 text-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition duration-200">
+                    <a href="{% url 'edit_menu_item' item.id %}" class="flex-1 text-center px-4 py-2 border border-gray-300 hover:bg-leafy-green text-black rounded-lg text-sm font-medium transition duration-200">
                         Edit
                     </a>
-                    <a href="{% url 'delete_menu_item' item.id %}" class="flex-1 text-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition duration-200">
+                    <a href="{% url 'delete_menu_item' item.id %}" class="flex-1 text-center px-4 py-2 border border-gray-300 hover:bg-leafy-green text-black rounded-lg text-sm font-medium transition duration-200">
                         Delete
                     </a>
                 </div>
