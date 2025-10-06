@@ -68,9 +68,9 @@
                 <div class="flex items-center space-x-4">
                     <span class="text-sm text-gray-700">
                         Welcome, <span class="font-semibold text-leafy-green">{{ user.username }}</span>
-                        <span class="text-xs bg-carrot-orange text-white px-2 py-1 rounded-full ml-2">{{ user.role|capfirst }}</span>
+                        <span class="border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-black hover:border-leafy-green px-4 py-2 rounded text-sm font-medium transition duration-200">{{ user.role|capfirst }}</span>
                     </span>
-                    <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm font-medium transition duration-200">
+                    <a href="{% url 'logout' %}" class="border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-black hover:border-leafy-green px-4 py-2 rounded text-sm font-medium transition duration-200">
                         Logout
                     </a>
                 </div>
